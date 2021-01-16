@@ -1,0 +1,34 @@
+{
+  "name": "server-db-service",
+  "version": "1.0.0",
+  "description": "service database",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon ."
+  },
+  "author": "Duong Nguyen <duongnv.05@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.2.0",
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "http-errors": "^1.8.0",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.10.9",
+    "node-cache": "^5.1.2",
+    "node-color-log": "^5.2.0",
+    "path": "^0.12.7",
+    "serve-favicon": "^2.5.0",
+    "shortid": "^2.2.16",
+    "uuid": "^8.3.1"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.6"
+  }
+}

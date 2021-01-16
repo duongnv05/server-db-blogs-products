@@ -1,0 +1,1 @@
+exports.statusBlog = ["approved", "rejected", "pending"];
