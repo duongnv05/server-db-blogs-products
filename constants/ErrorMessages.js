@@ -41,6 +41,8 @@ const ERR_CONTENT_BLOG_INVALID = "Error content blogs is invalid";
 const ERR_DATE_RELEASED_INVALID = "Error date released invalid";
 const ERR_ACTORS_INVALID = "Error actors is invalid";
 const ERR_TAGS_INVALID = "Error tags is invalid";
+const ERR_CANNOT_FIND_BLOG_DETAIL = "Cannot find blog detail";
+const ERR_BLOG_ID_INVALID = "Blog Id is invalid";
 
 const errorCodes = {
 	1: ERR_SYSTEM,
@@ -80,7 +82,9 @@ const errorCodes = {
 	1003: ERR_CONTENT_BLOG_INVALID,
 	1004: ERR_DATE_RELEASED_INVALID,
 	1005: ERR_ACTORS_INVALID,
-	1006: ERR_TAGS_INVALID
+	1006: ERR_TAGS_INVALID,
+	1007: ERR_CANNOT_FIND_BLOG_DETAIL,
+	1008: ERR_BLOG_ID_INVALID
 }
 
 module.exports = (_code) => {

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { isNumber } = require('lodash');
 
 const getErrorFromCode = require('../constants/ErrorMessages');
 
@@ -14,21 +15,42 @@ RootModel.prototype = {
 		this.model = mongoose.model(name, schema);
 	},
 	getModel: function() {
-		return this.model;
+		return this.module;
 	},
 
-	find: async function(query={}, skip, limit, projection={}) {
+	find: async function(query={}, skip, limit, projection={}, disabledPlainObject=false) {
 		try {
-			const result =  await this.model.find(query, projection, { skip, limit });
+			let _skip, _limit;
+			if(typeof limit !== "undefined" && isNumber(limit)) {
+				_limit = Math.abs(limit);
+			}
+
+			if(typeof skip !== "undefined" && isNumber(skip)) {
+				_skip = skip > 0 ? skip * _limit : 0;
+			}
+			
+			let result = {};
+			if(disabledPlainObject) {
+				result =  await this.model.find(query, projection).skip(_skip).limit(_limit)
+			} else {
+				result =  await this.model.find(query, projection).lean().skip(_skip).limit(_limit)
+			}
+	
 			return Promise.resolve(result);
 		} catch(err) {
 			console.log(err);
 			return Promise.reject(getErrorFromCode(1));
 		}
 	},
-	findOne: async function(query={}, projection={}) {
+	findOne: async function(query={}, projection={}, disabledPlainObject=false) {
 		try {
-			const result = await this.model.findOne(query, projection);
+			let result;
+			if(disabledPlainObject) {
+				result = await this.model.findOne(query, projection);
+			} else {
+				result = await this.model.findOne(query, projection).lean();
+			}
+
 			return Promise.resolve(result);
 		} catch(err) {
 			console.log(err);

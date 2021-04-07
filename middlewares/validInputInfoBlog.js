@@ -1,4 +1,4 @@
-const { isEmpty, isArray } = require('lodash');
+const { isEmpty, isArray, isNumber } = require('lodash');
 const async = require('async');
 
 const getErrorFromCode = require('../constants/ErrorMessages');
@@ -8,6 +8,8 @@ exports.validInputBlog = (req, res, next) => {
     if(isEmpty(req.body)) {
         return response({ res, data: getErrorFromCode(2) });
     }
+
+    console.log(req.body)
 
     async.parallel({
         title: cb => {
@@ -19,8 +21,8 @@ exports.validInputBlog = (req, res, next) => {
             }
         },
         shortDescription: cb => {
-            const { shortDescription } = req.body;
-            if(isEmpty(shortDescription) || shortDescription.length < 50) {
+            const { short_description } = req.body;
+            if(isEmpty(short_description) || short_description.length < 50) {
                 cb(getErrorFromCode(1002));
             } else {
                 cb(null);
@@ -35,9 +37,10 @@ exports.validInputBlog = (req, res, next) => {
             }
         },
         dateReleased: cb => {
-            const { dateReleased } = req.body;
-            if(typeof dateReleased !== "undefined"
-            && dateReleased !== null && dateReleased !== "") {
+            const { date_released } = req.body;
+            if(typeof date_released !== "undefined"
+            && date_released !== null && date_released !== "") {
+                req.body.date_released = Number(req.body.date_released);
                 cb(null);
             } else {
                 cb(getErrorFromCode(1004));
