@@ -9,8 +9,6 @@ exports.validInputBlog = (req, res, next) => {
         return response({ res, data: getErrorFromCode(2) });
     }
 
-    console.log(req.body)
-
     async.parallel({
         title: cb => {
             const { title } = req.body;
@@ -58,6 +56,14 @@ exports.validInputBlog = (req, res, next) => {
             const { tags } = req.body;
             if(isEmpty(tags) || !isArray(tags)) {
                 cb(getErrorFromCode(1006));
+            } else {
+                cb(null);
+            }
+        },
+        appId: cb => {
+            const { appId } = req.body;
+            if(isEmpty(appId)) {
+                cb(getErrorFromCode(2));
             } else {
                 cb(null);
             }

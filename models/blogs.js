@@ -10,10 +10,9 @@ const { loggerHotError } = require('../services/logger');
 
 const getErrorFromCode = require('../constants/ErrorMessages');
 const { statusBlog } = require('../constants/Blog');
+const { statusModel } = require('../constants/Global');
 
 const { loggerError } = require('../services/logger');
-const { resolve } = require('path');
-
 
 shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
 const blogSchema = new Mongoose.Schema({
@@ -27,7 +26,8 @@ const blogSchema = new Mongoose.Schema({
 	tags: { type: Array, required: true },
 	app_id: { type: String, required: true },
 
-	status: { type: String, default: 'pending', enum: statusBlog },
+	status_approved: { type: String, default: 'pending', enum: statusBlog },
+	status: { type: String, default: 'disabled', enum: statusModel },
 	date_created: { type: Number, default: Date.now() },
 	date_modified: Number
 });	
@@ -83,7 +83,8 @@ const tempPrototype = {
 			date_created: 1,
 			actors: 1,
 			tags: 1,
-			status: 1
+			status: 1,
+			status_approved: 1,
 		}
 
 		const self = this;
@@ -137,6 +138,7 @@ const tempPrototype = {
 			actors: 1,
 			tags: 1,
 			status: 1,
+			status_approved: 1,
 			content: 1,
 			time_read: 1
 		};
@@ -179,8 +181,6 @@ const tempPrototype = {
 					reject(getErrorFromCode(1));
 				})
 			}
-	
-			return null;
 		})
 	}
 }

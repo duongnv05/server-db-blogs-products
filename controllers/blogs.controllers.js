@@ -13,11 +13,11 @@ const getErrorFromCode = require("../constants/ErrorMessages");
 function BlogsController() {
     this._super.call(this);
 
-    //- router
-    this.router.post('/api/blog/create-new', validInputBlog, this.handleCreateNewBlog.bind(this));
-    this.router.post('/api/blog/get-detail', this.handleGetBlogDetailWithId.bind(this));
+    //- router admin management
+    this.router.post('/api/admin/blog/create-new', validInputBlog, this.handleCreateNewBlog.bind(this));
+    this.router.post('/api/admin/blog/get-detail', this.handleGetBlogDetail.bind(this));
 
-    this.router.get('/api/blog/get-blogs-management', this.handleGetBlogsForManage.bind(this));
+    this.router.get('/api/admin/blog/get-blogs-management', this.handleGetBlogsForManage.bind(this));
 }
 
 BlogsController.prototype = Object.create(RootController.prototype);
@@ -51,7 +51,7 @@ const tempPrototype = {
         }
     },
 
-    handleGetBlogDetailWithId: async function(req, res) {
+    handleGetBlogDetail: async function(req, res) {
         try {
             const { blog_id } = req.body;
             if(!blog_id) throw getErrorFromCode(1008);
