@@ -1,4 +1,4 @@
-const { isEmpty, isArray, isNumber } = require('lodash');
+const { isEmpty, isArray } = require('lodash');
 const async = require('async');
 
 const getErrorFromCode = require('../constants/ErrorMessages');
@@ -61,9 +61,70 @@ exports.validInputBlog = (req, res, next) => {
             }
         },
         appId: cb => {
-            const { appId } = req.body;
-            if(isEmpty(appId)) {
+            const { app_id } = req.query;
+            if(isEmpty(app_id)) {
                 cb(getErrorFromCode(2));
+            } else {
+                req.body.app_id = app_id;
+                cb(null);
+            }
+        }
+    }, (error) => {
+        if(!error) {
+
+            next();
+        } else {
+            response({ res, data: error });
+        }
+    })
+}
+
+exports.validInputBlogToUpdate = (req, res, next) => {
+    async.parallel({
+        _id: cb => {
+            const { _id } = req.body;
+            if(isEmpty(_id)) {
+                cb(getErrorFromCode(1008));
+            } else {
+                cb(null);
+            }
+        },
+        shortDescription: cb => {
+            const { short_description } = req.body;
+            if(short_description && short_description.length < 50) {
+                cb(getErrorFromCode(1002));
+            } else {
+                cb(null);
+            }
+        },
+        content: cb => {
+            const { content } = req.body;
+            if(content && content.length < 250) {
+                cb(getErrorFromCode(1003));
+            } else {
+                cb(null);
+            }
+        },
+        dateReleased: cb => {
+            const { date_released } = req.body;
+            if(date_released) {
+                req.body.date_released = Number(req.body.date_released);
+            } 
+            cb(null);
+        },
+        actors: cb => {
+            const { actors } = req.body;
+            if(actors && !isArray(actors)) {
+                cb(getErrorFromCode(1005));
+            } else {
+                cb(null);
+            }
+        },
+        tags: cb => {
+            const { tags } = req.body;
+            console.log(tags)
+            if(tags && !isArray(tags)) {
+                cb(getErrorFromCode(1006));
             } else {
                 cb(null);
             }

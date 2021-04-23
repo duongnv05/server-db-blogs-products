@@ -25,16 +25,17 @@ app.use(cors({
 	origin: "http//duongnv.me:3100"
 }));
 
-const bodyParser = require('body-parser');
-
 const loggers = require('morgan');
 app.use(loggers('dev'));
 
 connectDb(() => {
-
+	const bodyParser = require('body-parser');
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json());
 
+	const authenRequest = require('./middlewares/authenRequest');
+    app.use(authenRequest);
+	
 	app.use(controllers);
 
 	app.use((req, res, next) => {

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { isNumber } = require('lodash');
 
 const getErrorFromCode = require('../constants/ErrorMessages');
+const { loggerError } = require('../services/logger');
 
 function RootModel() {
 	this.model = null;
@@ -18,7 +19,7 @@ RootModel.prototype = {
 		return this.module;
 	},
 
-	find: async function(query={}, skip, limit, projection={}, disabledPlainObject=false) {
+	find: async function(query={}, skip, limit, projection={}, sort={}, disabledPlainObject=false) {	
 		try {
 			let _skip, _limit;
 			if(typeof limit !== "undefined" && isNumber(limit)) {
@@ -31,14 +32,14 @@ RootModel.prototype = {
 			
 			let result = {};
 			if(disabledPlainObject) {
-				result =  await this.model.find(query, projection).skip(_skip).limit(_limit)
+				result =  await this.model.find(query, projection).sort(sort).skip(_skip).limit(_limit)
 			} else {
-				result =  await this.model.find(query, projection).lean().skip(_skip).limit(_limit)
+				result =  await this.model.find(query, projection).lean().sort(sort).skip(_skip).limit(_limit)
 			}
 	
 			return Promise.resolve(result);
 		} catch(err) {
-			console.log(err);
+			loggerError(err);
 			return Promise.reject(getErrorFromCode(1));
 		}
 	},
