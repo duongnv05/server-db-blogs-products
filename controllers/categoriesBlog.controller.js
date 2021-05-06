@@ -63,8 +63,8 @@ const tempPrototype = {
 
     handleGetCategoriesBlog: async function(req, res) {
         try {
-            const { app_id, skip, limit } = req.query;
-            const result = await CatBlogModel.getCategoriesBlogWithAppId(app_id, skip, limit);
+            const { sign, skip, limit } = req.query;
+            const result = await CatBlogModel.getCategoriesBlogWithAppId(sign, skip, limit);
             if(result && !result.error) {
                 return response({ res, data: result });
             }

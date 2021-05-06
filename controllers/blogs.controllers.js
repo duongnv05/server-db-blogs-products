@@ -44,7 +44,7 @@ const tempPrototype = {
 
     handleGetBlogsForManage: async function(req, res) {
         try {
-            const result = await blogsModel.getBlogsWithAppId(req.query.app_id);
+            const result = await blogsModel.getBlogsWithAppId(req.query.sign);
             
             if(!result || !result.error) {
                 return response({ res, data: result })

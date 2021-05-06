@@ -18,7 +18,7 @@ exports.validateInputBeforeCreateCatBlog = function(req, res, next) {
         return;
     }
 
-    req.body.app_id = req.query.app_id;
+    req.body.app_id = req.query.sign;
     next();
 }
 
@@ -31,6 +31,6 @@ exports.validateInputBeforeUpdateCatBlog = function(req, res, next) {
             return response({ res, data: getErrorFromCode(2) });
         }
     
-    req.body.app_id = req.query.app_id;
+    req.body.app_id = req.query.sign;
     next();
 }

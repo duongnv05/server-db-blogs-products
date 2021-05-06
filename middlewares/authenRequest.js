@@ -4,9 +4,9 @@ const response = require('../utils/response');
 const getError = require('../constants/ErrorMessages');
 
 module.exports = (req, res, next) => {
-    const { app_id, origin } = req.query;
+    const { sign, origin } = req.query;
 
-    if((typeof app_id === undefined || app_id === null || isEmpty(app_id))
+    if((typeof sign === undefined || sign === null || isEmpty(sign))
         && (typeof origin === undefined || origin === null || isEmpty(origin))) {
             response({ res, data: getError(14) })
             return;

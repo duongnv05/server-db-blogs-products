@@ -5,9 +5,9 @@ const getError = require('../constants/ErrorMessages');
 const response = require('../utils/response');
 
 exports.validateInputAppId = (req, res, next) => {
-    const { app_id } = req.query;
+    const { sign } = req.query;
 
-    if(isEmpty(app_id)) {
+    if(isEmpty(sign)) {
         return response({ res, data: getError(14) });
     }
 

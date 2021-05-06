@@ -61,11 +61,11 @@ exports.validInputBlog = (req, res, next) => {
             }
         },
         appId: cb => {
-            const { app_id } = req.query;
-            if(isEmpty(app_id)) {
+            const { sign } = req.query;
+            if(isEmpty(sign)) {
                 cb(getErrorFromCode(2));
             } else {
-                req.body.app_id = app_id;
+                req.body.app_id = sign;
                 cb(null);
             }
         }
