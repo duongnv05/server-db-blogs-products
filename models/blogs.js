@@ -16,16 +16,20 @@ shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWX
 const blogSchema = new Mongoose.Schema({
 	_id: { type: String, default: shortid.generate},
     title: { type: String, required: true },
+    thumbnail: { type: String },
     short_description: { type: String, required: true },
     content: { type: String, required: true },
     time_read: { type: Number, required: true },
 	date_released: { type: Number, required: true },
 	actors: { type: Array, required: true }, //- username 
 	tags: { type: Array, required: true },
+	categories_blog_id: { type: Array },
 	app_id: { type: String, required: true },
+	counter_viewed: {type: Number, default: 0},
 
 	status_approved: { type: String, default: 'pending', enum: statusBlog },
 	status: { type: String, default: 'disabled', enum: statusModel },
+	
 	date_created: { type: Number, default: Date.now() },
 	date_modified: Number
 });	
@@ -59,9 +63,9 @@ const tempPrototype = {
 		})
 	},	
 
-	updateBlog: function(_id, _data) {		
+	updateBlog: function(_id, app_id, _data) {		
 		return new Promise((resolve, reject) => {
-			this.model.updateOne({ _id }, _data)
+			this.model.updateOne({ _id, app_id }, _data)
 				.then(result => {
 					if(result && result.ok === 1) {
 						resolve({ message: "Update blog success" });
@@ -77,7 +81,7 @@ const tempPrototype = {
 		});
 	},
 
-	getBlogsWithAppId: function(app_id, skip=0, limit=5) {
+	getBlogsWithAppId: function(app_id, skip=0, limit=5, query={}) {
 		const projection = {
 			_id: 1,
 			title: 1,
@@ -89,14 +93,17 @@ const tempPrototype = {
 			tags: 1,
 			status: 1,
 			status_approved: 1,
-			app_id: 1
+			app_id: 1,
+			image_url: 1,
+			categories_blog_id: 1
 		}
 
-		const self = this;
+		const _query = Object.assign({ app_id }, query);
+
 		return new Promise((resolve, reject) => {
 			async.parallel({
 				totalBlog: (cb) => {
-					this.getTotalBlogWithAppId(app_id)
+					this.getTotalBlogWithAppId(app_id, _query)
 						.then(total => {
 							cb(null, total);
 						}).catch(error => {
@@ -104,7 +111,7 @@ const tempPrototype = {
 						});
 				},
 				blogs: (cb) => {
-					self.find({ app_id }, skip, limit, projection, { date_created: 1 })
+					this.find(_query, skip, limit, projection, { date_created: 1 })
 						.then(result => {
 							if(result) {
 
@@ -132,7 +139,7 @@ const tempPrototype = {
 		})
 	},
 
-	getBlogDetailWithId: function(_id) {
+	getBlogDetailWithId: function(app_id, _id, query={}) {
 		const projection = {
 			_id: 1,
 			title: 1,
@@ -146,10 +153,19 @@ const tempPrototype = {
 			status_approved: 1,
 			content: 1,
 			time_read: 1,
-			app_id: 1
+			app_id: 1,
+			image_url: 1,
+			categories_blog_id: 1,
+			thumbnail: 1
 		};
+
+		const _query = {
+			app_id, _id
+		}
+
+		Object.assign(_query, query);
 		return new Promise((resolve, reject) => {
-			this.findOne({ _id }, projection)
+			this.findOne(_query, projection)
 				.then(result => {
 					if(result && !isEmpty(result)) {
 						return resolve({ blogDetail: result })
@@ -162,14 +178,13 @@ const tempPrototype = {
 		})
 	},
 
-	getTotalBlogWithAppId: function(appId) {
+	getTotalBlogWithAppId: function(app_id, query={}) {
+		const _query = Object.assign({ app_id }, query);
 		return new Promise((resolve, reject) => {
-			if(appId) {
+			if(app_id) {
 				this.model.aggregate([
 					{
-						$match: {
-							app_id: appId
-						}
+						$match: _query
 					}, 
 					{
 						$count: "totalBlog"
@@ -188,7 +203,9 @@ const tempPrototype = {
 				})
 			}
 		})
-	}
+	},
+
+	// getAllBlogsWithAppId: function(app_id,)
 }
 
 Object.assign(BlogsModel.prototype, tempPrototype);

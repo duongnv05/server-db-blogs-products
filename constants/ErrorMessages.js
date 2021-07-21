@@ -42,12 +42,18 @@ const ERR_DATE_RELEASED_INVALID = "Error date released invalid";
 const ERR_ACTORS_INVALID = "Error actors is invalid";
 const ERR_TAGS_INVALID = "Error tags is invalid";
 const ERR_CANNOT_FIND_BLOG_DETAIL = "Cannot find blog detail";
-const ERR_BLOG_ID_INVALID = "Blog Id is invalid";
+const ERR_CATEGORIES_BLOG_ID_REQUIRED = "Categories blog is required";
+const ERR_CATEGORIES_BLOG_ID_INVALID = "Categiries blog is invalid";
 
 //- CATEGORY BLOG
 const ERR_NAME_CAT_BLOG_TAKEN = "Category blog name is already taken";
 const ERR_URL_CAT_BLOG_TAKEN = "Category blog url is already taken";
 const ERR_URL_INVALID = "Url is invalid";
+const ERR_CATEGORY_BLOG_ID_INVALID = "Error category blog id invalid";
+
+//- BLOG
+const ERR_BLOG_ID_INVALID = 'Input blog id is invalid';
+const ERR_BLOG_UPDATE_PERMISSION = 'Permission deny to update blog';
 
 const errorCodes = {
 	1: ERR_SYSTEM,
@@ -89,12 +95,18 @@ const errorCodes = {
 	1005: ERR_ACTORS_INVALID,
 	1006: ERR_TAGS_INVALID,
 	1007: ERR_CANNOT_FIND_BLOG_DETAIL,
-	1008: ERR_BLOG_ID_INVALID,
+	1009: ERR_CATEGORIES_BLOG_ID_REQUIRED,
+	1010: ERR_CATEGORIES_BLOG_ID_INVALID,
 
 	// CATEGORY BLOG
 	1500: ERR_NAME_CAT_BLOG_TAKEN,
 	1501: ERR_URL_CAT_BLOG_TAKEN,
 	1502: ERR_URL_INVALID,
+	1503: ERR_CATEGORY_BLOG_ID_INVALID,
+
+	//- BLOG
+	5000: ERR_BLOG_ID_INVALID,
+	5001: ERR_BLOG_UPDATE_PERMISSION,
 }
 
 module.exports = (_code) => {

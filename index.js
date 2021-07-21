@@ -15,7 +15,7 @@ const { loggerNotify } = require('./services/logger');
 
 const app = express();
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
-const port = 3002;
+const port = process.env.PORT || 3002;
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser(secretSession));

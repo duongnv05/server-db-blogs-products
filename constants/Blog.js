@@ -1,1 +1,5 @@
-exports.statusBlog = ["approved", "rejected", "pending"];
+exports.statusBlog = {
+    APPROVED: "approved",
+    REJECTED: "rejected",
+    PENDING:"pending"
+};
