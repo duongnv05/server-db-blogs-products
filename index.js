@@ -24,7 +24,7 @@ const cors = require('cors');
 app.use(cors({
 	origin: [
 		"http//duongnv.me:3100",
-		"https://service-api-duongnv-me.herokuapp.com/"
+		"https://service-api-duongnv-me.herokuapp.com"
 	]
 }));
 
