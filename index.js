@@ -22,7 +22,10 @@ app.use(cookieParser(secretSession));
 
 const cors = require('cors');
 app.use(cors({
-	origin: "http//duongnv.me:3100"
+	origin: [
+		"http//duongnv.me:3100",
+		"https://service-api-duongnv-me.herokuapp.com/"
+	]
 }));
 
 const loggers = require('morgan');
