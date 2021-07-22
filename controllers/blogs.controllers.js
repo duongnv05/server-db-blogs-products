@@ -7,7 +7,7 @@ const {
     validInputBlog,
     validInputBlogToUpdate,
     validInputGetBlogsClient,
-    validInputGetBlogWithCatBlogId,
+    validInputGetBlogWithBlogCatId,
     validInputBlogIdToGetBlogDetail
 } = require('../middlewares/validInputInfoBlog');
 
@@ -30,7 +30,7 @@ function BlogsController() {
     //- load blog follow id
     // client
     this.router.get('/api/blog/get-blogs', validInputGetBlogsClient, this.handleGetBlogs.bind(this));
-    this.router.get('/api/blog/get-blogs-with-cat-blog', validInputGetBlogWithCatBlogId, this.handleGetBlogs.bind(this));
+    this.router.get('/api/blog/get-blogs-with-cat-blog', validInputGetBlogWithBlogCatId, this.handleGetBlogs.bind(this));
 
     this.router.post('/api/blog/get-detail', validInputBlogIdToGetBlogDetail, this.handleGetBlogDetailToClient.bind(this));
 }

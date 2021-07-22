@@ -1,6 +1,6 @@
 const RootController = require('./root.controller');
 
-const CatBlogModel = require('../models/categoriesBlog');
+const BlogCatModel = require('../models/blogCategories');
 
 const {
     validateInputBeforeCreateCatBlog,
@@ -17,32 +17,32 @@ const getError = require('../constants/ErrorMessages');
 const { statusModel } = require('../constants/Global');
 const { loggerError } = require('../services/logger');
 
-function CategoriesBlogController() {
+function blogCategoriesController() {
     this._super.call(this);
 
-    this.router.post('/api/admin/category-blog/create-new', validateInputBeforeCreateCatBlog, this.handleAdminCreateNew.bind(this));
-    this.router.post('/api/admin/category-blog/update-info', validateInputBeforeUpdateCatBlog, this.handleAdminUpdateInfo.bind(this));
-    this.router.post('/api/admin/category-blog/search-name', validateInputAppId, validInputBeforeSearchCatBlog, this.handleAdminSearchFollowingName.bind(this));
-    this.router.post('/api/admin/category-blog/get-categories-blog', validateInputAppId, validInputIdsGetCatBlog, this.handleAdminGetCategoryBlogWithIds.bind(this));
+    this.router.post('/api/admin/blog-category/create-new', validateInputBeforeCreateCatBlog, this.handleAdminCreateNew.bind(this));
+    this.router.post('/api/admin/blog-category/update-info', validateInputBeforeUpdateCatBlog, this.handleAdminUpdateInfo.bind(this));
+    this.router.post('/api/admin/blog-category/search-name', validateInputAppId, validInputBeforeSearchCatBlog, this.handleAdminSearchFollowingName.bind(this));
+    this.router.post('/api/admin/blog-category/get-blog-categories', validateInputAppId, validInputIdsGetCatBlog, this.handleAdminGetBlogCategoryWithIds.bind(this));
     
-    this.router.get('/api/admin/category-blog/get-for-management', validateInputAppId, this.handleAdminGetCategoriesBlog.bind(this));
+    this.router.get('/api/admin/blog-category/get-for-management', validateInputAppId, this.handleAdminGetblogCategories.bind(this));
 
     //- client
-    this.router.get('/api/category-blog/get-categories-blog', validateInputAppId, this.handleGetCategoriesBlog.bind(this));
-    this.router.get('/api/category-blog/get-category-blog-detail', this.handleGetCategoriesBlogDetailWithUrl.bind(this));
+    this.router.get('/api/blog-category/get-blog-categories', validateInputAppId, this.handleGetBlogCategories.bind(this));
+    this.router.get('/api/blog-category/get-blog-category-detail', this.handleGetBlogCategoriesDetailWithUrl.bind(this));
 }
 
-CategoriesBlogController.prototype = Object.create(RootController.prototype);
+blogCategoriesController.prototype = Object.create(RootController.prototype);
 
 const tempPrototype = {
     _super: RootController,
-    constructor: CategoriesBlogController,
+    constructor: blogCategoriesController,
 
     handleAdminCreateNew: async function(req, res) {
         try {
             const { body } = req;
 
-            const result = await CatBlogModel.createNew(body);
+            const result = await BlogCatModel.createNew(body);
             if(result && !result.error) {
                 return response({ res, data: result });
             }
@@ -57,7 +57,7 @@ const tempPrototype = {
         try {
             const { body } = req;
 
-            const result = await CatBlogModel.updateItemById(body._id, body);
+            const result = await BlogCatModel.updateItemById(body._id, body);
             if(result && !result.error) {
                 return response({ res, data: result });
             }
@@ -68,10 +68,10 @@ const tempPrototype = {
         }
     },
 
-    handleAdminGetCategoriesBlog: async function(req, res) {
+    handleAdminGetblogCategories: async function(req, res) {
         try {
             const { sign, skip, limit } = req.query;
-            const result = await CatBlogModel.getCategoriesBlogWithAppId(sign, skip, limit);
+            const result = await BlogCatModel.getblogCategoriesWithAppId(sign, skip, limit);
             if(result && !result.error) {
                 return response({ res, data: result });
             }
@@ -86,7 +86,7 @@ const tempPrototype = {
         try {
             const { sign } = req.query;
             const { name } = req.body;
-            const data = await CatBlogModel.filterCategoriesBlogByName({ status: "" }, sign, name);
+            const data = await BlogCatModel.filterblogCategoriesByName({ status: "" }, sign, name);
 
             response({ res, data: { results: data } });
         } catch(error) {
@@ -94,14 +94,14 @@ const tempPrototype = {
         }
     },
 
-    handleAdminGetCategoryBlogWithIds: async function(req, res) {
+    handleAdminGetBlogCategoryWithIds: async function(req, res) {
         try {
             const { sign } = req.query;
             const { list_id } = req.body;
 
-            const data = await CatBlogModel.getCategoriesWithIds({}, sign, list_id);
+            const data = await BlogCatModel.getCategoriesWithIds({}, sign, list_id);
 
-            response({ res, data: { categoriesBlog: data } })
+            response({ res, data: { blogCategories: data } })
 
         } catch(error) {
             response({ res, data: error })
@@ -109,28 +109,28 @@ const tempPrototype = {
     },
 
     //- client
-    handleGetCategoriesBlog: async function(req, res) {
+    handleGetBlogCategories: async function(req, res) {
         try {
             const { sign } = req.query;
 
-            const result = await CatBlogModel.getCategoriesBlogEnabledWithAppId(sign);
+            const result = await BlogCatModel.getblogCategoriesEnabledWithAppId(sign);
 
             if(result) {
                 return  response({ res, data: result });
             }
 
-            throw "handleGetCategoriesBlog error";
+            throw "handleGetBlogCategories error";
         } catch(error) {
-            loggerError("handleGetCategoriesBlog: ", error);
+            loggerError("handleGetBlogCategories: ", error);
             response({ res, data: getError(1) });
         }
     },
 
-    handleGetCategoriesBlogDetailWithUrl: async function(req, res) {
+    handleGetBlogCategoriesDetailWithUrl: async function(req, res) {
         try {
             const { sign, url } = req.query;
             
-            const result = await CatBlogModel.getCategoryBlogDetail(sign, {
+            const result = await BlogCatModel.getBlogCategoryDetail(sign, {
                 status: statusModel.ENABLED,
                 url
             });
@@ -139,18 +139,18 @@ const tempPrototype = {
                 return  response({ res, data: result });
             }
 
-            throw "handleGetCategoriesBlogDetailWithUrl"
+            throw "handleGetBlogCategoriesDetailWithUrl"
         } catch(error) {
-            loggerError("handleGetCategoriesBlog: ", error);
+            loggerError("handleGetblogCategories: ", error);
             response({ res, data: getError(1) });
         }
     }
 }//- end of prototype
 
-Object.assign(CategoriesBlogController.prototype, tempPrototype);
+Object.assign(blogCategoriesController.prototype, tempPrototype);
 
-CategoriesBlogController.instance = function() {
-    return new CategoriesBlogController();
+blogCategoriesController.instance = function() {
+    return new blogCategoriesController();
 }
 
-module.exports = CategoriesBlogController.instance();
+module.exports = blogCategoriesController.instance();

@@ -42,8 +42,8 @@ const ERR_DATE_RELEASED_INVALID = "Error date released invalid";
 const ERR_ACTORS_INVALID = "Error actors is invalid";
 const ERR_TAGS_INVALID = "Error tags is invalid";
 const ERR_CANNOT_FIND_BLOG_DETAIL = "Cannot find blog detail";
-const ERR_CATEGORIES_BLOG_ID_REQUIRED = "Categories blog is required";
-const ERR_CATEGORIES_BLOG_ID_INVALID = "Categiries blog is invalid";
+const ERR_BLOG_CATEGORIES_ID_REQUIRED = "Categories blog is required";
+const ERR_BLOG_CATEGORIES_ID_INVALID = "Categiries blog is invalid";
 
 //- CATEGORY BLOG
 const ERR_NAME_CAT_BLOG_TAKEN = "Category blog name is already taken";
@@ -95,8 +95,8 @@ const errorCodes = {
 	1005: ERR_ACTORS_INVALID,
 	1006: ERR_TAGS_INVALID,
 	1007: ERR_CANNOT_FIND_BLOG_DETAIL,
-	1009: ERR_CATEGORIES_BLOG_ID_REQUIRED,
-	1010: ERR_CATEGORIES_BLOG_ID_INVALID,
+	1009: ERR_BLOG_CATEGORIES_ID_REQUIRED,
+	1010: ERR_BLOG_CATEGORIES_ID_INVALID,
 
 	// CATEGORY BLOG
 	1500: ERR_NAME_CAT_BLOG_TAKEN,

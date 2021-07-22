@@ -10,12 +10,12 @@ const getError = require('../constants/ErrorMessages');
 const { loggerError } = require('../services/logger');
 
 shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
-const categoriesBlogSchema = new Mongoose.Schema({
+const blogCategoriesSchema = new Mongoose.Schema({
     _id: { type: String, default: shortid.generate},
     name: { type: String, required: true },
     url: { type: String, required: true },
 	app_id: { type: String, required: true },
-	categories_blog_id: { type: Array, default: [] },
+	blog_categories_id: { type: Array, default: [] },
 
 	status: { type: String, default: statusModel.ENABLED, enum: statusModel },
 
@@ -23,19 +23,19 @@ const categoriesBlogSchema = new Mongoose.Schema({
 	date_modified: Number
 });
 
-categoriesBlogSchema.index({_id: 1, app_id: 1, url: 1, name: 1}, {unique: true});
+blogCategoriesSchema.index({_id: 1, app_id: 1, url: 1, name: 1}, {unique: true});
 
-function categoriesBlogModel() {
+function blogCategoriesModel() {
     this._super.call(this);
-	this.nameModel = "categories_blog";	
-	this.setModel("categories_blog", categoriesBlogSchema);
+	this.nameModel = "blog_categories";	
+	this.setModel("blog_categories", blogCategoriesSchema);
 }
 
-categoriesBlogModel.prototype = Object.create(RootModel.prototype);
+blogCategoriesModel.prototype = Object.create(RootModel.prototype);
 
 const tempPrototype = {
 	_super: RootModel,
-	constructor: categoriesBlogModel,
+	constructor: blogCategoriesModel,
 
 	createNew: function(doc) {
 		const { name, url, app_id } = doc;
@@ -162,7 +162,7 @@ const tempPrototype = {
 		});
 	},
 
-	getCategoriesBlogWithAppId: function(app_id, skip=0, limit=5) {
+	getblogCategoriesWithAppId: function(app_id, skip=0, limit=5) {
 		const projection = {
 			_id: 1,
 			name: 1,
@@ -181,7 +181,7 @@ const tempPrototype = {
 							cb(error, "");
 						})
 				},
-				categoriesBlog: cb => {
+				blogCategories: cb => {
 					this.find({app_id}, skip, limit, projection, { date_created: -1 })
 						.then(result => {
 							if(result) {
@@ -197,7 +197,7 @@ const tempPrototype = {
 			}, (error, result) => {
 				if(!error) {
 					const data = {
-						categoriesBlog: result.categoriesBlog,
+						blogCategories: result.blogCategories,
 						total: result.total
 					}
 
@@ -234,7 +234,7 @@ const tempPrototype = {
 		});
 	},
 
-	filterCategoriesBlogByName(query, app_id, name) {
+	filterblogCategoriesByName(query, app_id, name) {
 		return new Promise((resolve, reject) => {
 			const projection = {
 				_id: 1,
@@ -254,13 +254,13 @@ const tempPrototype = {
 					resolve(result);
 					
 				}).catch(error => {
-					console.loggerError("filterCategoriesBlogByName: ", error);
+					console.loggerError("filterblogCategoriesByName: ", error);
 					reject(getError(2))
 				})
 		})
 	},
 
-	getCategoriesBlogEnabledWithAppId(app_id) {
+	getblogCategoriesEnabledWithAppId(app_id) {
 		return new Promise((resolve, reject) => {
 			const projection = {
 				_id: 1,
@@ -274,25 +274,25 @@ const tempPrototype = {
 				.then(result => {
 					if(result) {
 						return resolve({
-							categoriesBlog: result
+							blogCategories: result
 						});
 					}
 
 					throw "cannot get categories blog";
 				}).catch(error => {
-					loggerError("getCategoriesBlogEnabledWithAppId: ", error);
+					loggerError("getblogCategoriesEnabledWithAppId: ", error);
 					reject(getError(1));
 				})
 		})
 	},
 
-	getCategoryBlogDetail: function(app_id, query) {
+	getBlogCategoryDetail: function(app_id, query) {
 		return new Promise((resolve, reject) => {
 			const projection = {
 				name: 1,
 				url: 1,
 				app_id: 1,
-				categories_blog_id: 1,
+				blog_categories_id: 1,
 			}
 			let _query = { app_id };
 			Object.assign(_query, query);
@@ -302,22 +302,22 @@ const tempPrototype = {
 					if(result) {
 						console.log(result);
 						return resolve({
-							categoryBlog: result
+							blogCategory: result
 						})
 					}
 
-					throw "cannot get category blog detail " + query;
+					throw "cannot get blog category detail " + query;
 				}).catch(error => {
-					loggerError("getCategoryBlogDetail: ", error);
+					loggerError("getBlogCategoryDetail: ", error);
 					reject(getError(1));
 				})
 		})
 	}
 }//- end of model
 
-Object.assign(categoriesBlogModel.prototype, tempPrototype);
+Object.assign(blogCategoriesModel.prototype, tempPrototype);
 
-categoriesBlogModel.instance = function() {
-	return new categoriesBlogModel();
+blogCategoriesModel.instance = function() {
+	return new blogCategoriesModel();
 }
-module.exports = categoriesBlogModel.instance();
+module.exports = blogCategoriesModel.instance();

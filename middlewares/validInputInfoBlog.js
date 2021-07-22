@@ -72,11 +72,11 @@ exports.validInputBlog = (req, res, next) => {
                 cb(null);
             }
         },
-        categories_blog_id: cb => {
-            const { categories_blog_id } = req.body;
+        blog_categories_id: cb => {
+            const { blog_categories_id } = req.body;
             if(
-                typeof categories_blog_id !== "undefined"
-                && !isArray(categories_blog_id)
+                typeof blog_categories_id !== "undefined"
+                && !isArray(blog_categories_id)
             ) {
                 cb(getError(1010));
             } else {
@@ -142,11 +142,11 @@ exports.validInputBlogToUpdate = (req, res, next) => {
                 cb(null);
             }
         },
-        categories_blog_id: cb => {
-            const { categories_blog_id } = req.body;
+        blog_categories_id: cb => {
+            const { blog_categories_id } = req.body;
             if(
-                typeof categories_blog_id !== "undefined"
-                && !isArray(categories_blog_id)
+                typeof blog_categories_id !== "undefined"
+                && !isArray(blog_categories_id)
             ) {
                 cb(getError(1010));
             } else {
@@ -205,7 +205,7 @@ exports.validInputGetBlogsClient = (req, res, next) => {
     });
 };
 
-exports.validInputGetBlogWithCatBlogId = (req, res, next) => {
+exports.validInputGetBlogWithBlogCatId = (req, res, next) => {
     async.parallel({
         sign: (cb) => {
             const { sign } = req.query;
@@ -216,10 +216,10 @@ exports.validInputGetBlogWithCatBlogId = (req, res, next) => {
                 cb(null);
             }
         },
-        categoryBlogId: (cb) => {
-            const { categoryBlogId } = req.query;
+        blogCategoryId: (cb) => {
+            const { blogCategoryId } = req.query;
 
-            if(categoryBlogId && categoryBlogId !== "") {
+            if(blogCategoryId && blogCategoryId !== "") {
                 cb(null);
             } else {
                 cb(true);
@@ -232,13 +232,13 @@ exports.validInputGetBlogWithCatBlogId = (req, res, next) => {
 
         const now = Date.now();
 
-        const { categoryBlogId } = req.query;
+        const { blogCategoryId } = req.query;
         
         req.query.query = {};
         req.query.query.status = statusModel.ENABLED;
         req.query.query.status_approved = statusBlog.APPROVED;
         req.query.query.date_released = { $lte: now };
-        req.query.query.categories_blog_id = categoryBlogId
+        req.query.query.blog_categories_id = blogCategoryId
 
         next()
     })

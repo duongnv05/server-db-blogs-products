@@ -23,7 +23,7 @@ const blogSchema = new Mongoose.Schema({
 	date_released: { type: Number, required: true },
 	actors: { type: Array, required: true }, //- username 
 	tags: { type: Array, required: true },
-	categories_blog_id: { type: Array },
+	blog_categories_id: { type: Array },
 	app_id: { type: String, required: true },
 	counter_viewed: {type: Number, default: 0},
 
@@ -95,7 +95,7 @@ const tempPrototype = {
 			status_approved: 1,
 			app_id: 1,
 			image_url: 1,
-			categories_blog_id: 1
+			blog_categories_id: 1
 		}
 
 		const _query = Object.assign({ app_id }, query);
@@ -155,7 +155,7 @@ const tempPrototype = {
 			time_read: 1,
 			app_id: 1,
 			image_url: 1,
-			categories_blog_id: 1,
+			blog_categories_id: 1,
 			thumbnail: 1
 		};
 
