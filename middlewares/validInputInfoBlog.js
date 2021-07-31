@@ -246,7 +246,6 @@ exports.validInputGetBlogWithBlogCatId = (req, res, next) => {
 
 exports.validInputBlogIdToGetBlogDetail = (req, res, next) => {
     const { blog_id } = req.body;
-    console.log(req.body)
 
     if(!blog_id || isEmpty(blog_id)) {
         return response({ res, data: getError(1503) });
@@ -257,5 +256,15 @@ exports.validInputBlogIdToGetBlogDetail = (req, res, next) => {
     req.query.query.status = statusModel.ENABLED;
     req.query.query.status_approved = statusBlog.APPROVED;
     req.query.query.date_released = { $lte: now };
+    next();
+}
+
+exports.validCounterViewedBlog = (req, res, next) => {
+    const { blog_id,viewed_second } = req.body;
+
+    if(isEmpty(blog_id) || isEmpty(viewed_second) || viewed_second === 0) {
+        return response({ res, data: { message: "counter success" } });
+    }
+
     next();
 }

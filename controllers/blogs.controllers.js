@@ -8,7 +8,8 @@ const {
     validInputBlogToUpdate,
     validInputGetBlogsClient,
     validInputGetBlogWithBlogCatId,
-    validInputBlogIdToGetBlogDetail
+    validInputBlogIdToGetBlogDetail,
+    validCounterViewedBlog
 } = require('../middlewares/validInputInfoBlog');
 
 const { loggerError } = require('../services/logger');
@@ -33,6 +34,7 @@ function BlogsController() {
     this.router.get('/api/blog/get-blogs-with-cat-blog', validInputGetBlogWithBlogCatId, this.handleGetBlogs.bind(this));
 
     this.router.post('/api/blog/get-detail', validInputBlogIdToGetBlogDetail, this.handleGetBlogDetailToClient.bind(this));
+    this.router.post('/api/blog/counter-view', validateInputAppId, validCounterViewedBlog, this.handleCounterViewedBlog.bind(this));
 }
 
 BlogsController.prototype = Object.create(RootController.prototype);
@@ -107,7 +109,6 @@ const tempPrototype = {
     handleGetBlogs: async function(req, res) {
         try {
             const { sign, skip, limit, query } = req.query;
-            console.log(query)
             const result = await blogsModel.getBlogsWithAppId(sign, skip, limit, query);;
             if(!result || !result.error) {
                 return response({ res, data: result })
@@ -123,7 +124,6 @@ const tempPrototype = {
         try {
             const { blog_id } = req.body;
             const { sign, query } = req.query;
-            if(!blog_id) throw getErrorFromCode(5000);
 
             const result = await blogsModel.getBlogDetailWithId(sign, blog_id, query);
 
@@ -135,6 +135,20 @@ const tempPrototype = {
         } catch(error) {
             loggerError(error);
             response({ res, data: error })
+        }
+    },
+
+    handleCounterViewedBlog: async function(req, res) {
+        try {
+            const { sign } = req.query;
+            const { blog_id, viewed_second } = req.body;
+            console.log(req.body)
+            await blogsModel.handleCounterViewedBlog(sign, blog_id, viewed_second);
+            
+            return response({ res, data: "success" });
+        } catch(error) {
+            loggerError(error);
+            response({ res, data: {message: "success"} });
         }
     }
 }

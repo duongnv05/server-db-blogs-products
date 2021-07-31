@@ -7,7 +7,7 @@ const { isEmpty } = require('lodash');
 const RootModel = require('./root');
 
 const getErrorFromCode = require('../constants/ErrorMessages');
-const { statusBlog } = require('../constants/Blog');
+const { statusBlog, ratioAddView } = require('../constants/Blog');
 const { statusModel } = require('../constants/Global');
 
 const { loggerError } = require('../services/logger');
@@ -26,6 +26,7 @@ const blogSchema = new Mongoose.Schema({
 	blog_categories_id: { type: Array },
 	app_id: { type: String, required: true },
 	counter_viewed: {type: Number, default: 0},
+	viewed: { type: Number, default: 0 },
 
 	status_approved: { type: String, default: 'pending', enum: statusBlog },
 	status: { type: String, default: 'disabled', enum: statusModel },
@@ -95,7 +96,8 @@ const tempPrototype = {
 			status_approved: 1,
 			app_id: 1,
 			image_url: 1,
-			blog_categories_id: 1
+			blog_categories_id: 1,
+			viewed: 1 
 		}
 
 		const _query = Object.assign({ app_id }, query);
@@ -111,7 +113,7 @@ const tempPrototype = {
 						});
 				},
 				blogs: (cb) => {
-					this.find(_query, skip, limit, projection, { date_created: 1 })
+					this.find(_query, skip, limit, projection, { date_created: -1 })
 						.then(result => {
 							if(result) {
 
@@ -139,25 +141,29 @@ const tempPrototype = {
 		})
 	},
 
-	getBlogDetailWithId: function(app_id, _id, query={}) {
-		const projection = {
-			_id: 1,
-			title: 1,
-			short_description: 1,
-			time_read: 1,
-			date_released: 1,
-			date_created: 1,
-			actors: 1,
-			tags: 1,
-			status: 1,
-			status_approved: 1,
-			content: 1,
-			time_read: 1,
-			app_id: 1,
-			image_url: 1,
-			blog_categories_id: 1,
-			thumbnail: 1
-		};
+	getBlogDetailWithId: function(app_id, _id, query={}, projection={}) {
+		let _projection = projection;
+		if(isEmpty(projection)) {
+			_projection = {
+				_id: 1,
+				title: 1,
+				short_description: 1,
+				time_read: 1,
+				date_released: 1,
+				date_created: 1,
+				actors: 1,
+				tags: 1,
+				status: 1,
+				status_approved: 1,
+				content: 1,
+				time_read: 1,
+				app_id: 1,
+				image_url: 1,
+				blog_categories_id: 1,
+				thumbnail: 1, 
+				viewed: 1
+			};
+		}
 
 		const _query = {
 			app_id, _id
@@ -165,7 +171,7 @@ const tempPrototype = {
 
 		Object.assign(_query, query);
 		return new Promise((resolve, reject) => {
-			this.findOne(_query, projection)
+			this.findOne(_query, _projection)
 				.then(result => {
 					if(result && !isEmpty(result)) {
 						return resolve({ blogDetail: result })
@@ -204,6 +210,35 @@ const tempPrototype = {
 			}
 		})
 	},
+
+	handleCounterViewedBlog: function(app_id, blog_id, viewed_second) {
+		return new Promise((resolve, reject) => {
+			this.getBlogDetailWithId(app_id, blog_id, {
+				status: statusModel.ENABLED,
+				status_approved: statusBlog.APPROVED
+			}, {
+				_id: 1,
+				time_read: 1,
+				viewed: 1
+			}).then(result => {
+				if(!result || !result.blogDetail) return reject("Blog is valid");
+
+				const { blogDetail } = result;
+				let isValidCounter = ((blogDetail.time_read * 60 / Number(viewed_second)) <= ratioAddView);
+				if(isValidCounter) {
+					this.updateOne({ app_id, _id: blog_id }, {
+						$inc: { viewed: 1 }
+					}).then(() => {
+						return resolve({ message: "success" })
+					}).catch(error => loggerError(error)) 
+				} else {
+					return resolve(true);
+				}
+
+				reject("counter fail: ", blog_id);
+			})
+		});
+	}
 
 	// getAllBlogsWithAppId: function(app_id,)
 }

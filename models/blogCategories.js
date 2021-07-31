@@ -300,7 +300,6 @@ const tempPrototype = {
 			this.findOne(_query, projection)
 				.then(result => {
 					if(result) {
-						console.log(result);
 						return resolve({
 							blogCategory: result
 						})
